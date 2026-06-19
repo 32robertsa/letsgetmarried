@@ -61,3 +61,11 @@
   font-display: swap;
   src: url(/static/Forum-Regular.ttf) format('truetype');
 }
+
+@font-face {
+  font-family: 'Tangerine';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/static/Tangerine-Regular.ttf) format('truetype');
+}

@@ -109,7 +109,7 @@ class Templates(request: Request) {
     )
   )).render
 
-  def message(tab: String, msg: String): String = page(tab)(div(cls:="centered", Markdown.render(msg)))
+  def message(tab: String, msg: String): String = page(tab)(h5(cls:="centered", Markdown.render(msg)))
 
   def home(): String = page("Home")(
     img(src:=model.Details.image),

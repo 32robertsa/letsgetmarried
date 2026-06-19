@@ -22,7 +22,7 @@ body {
 
 /*h1, h2, h3, h4, h5, h6 {*/
 h1, h2, h3 {
-  font-family: "GreatVibes", serif;
+  font-family: "Tangerine", serif;
   font-weight: normal;
   margin: 8px 0;
 }
@@ -63,7 +63,7 @@ input[type=submit], .button {
   color: white;
   border: none;
   border-radius: 5px;
-  background: darkred;
+  background: darkblue;
   text-align: center;
   letter-spacing: normal;
   text-decoration: none;
@@ -215,6 +215,11 @@ footer {
       > p {
         text-align: justify;
         text-indent: 2em;
+      }
+
+      > img {
+	  width: 200px;
+	  margin: 0 auto;
       }
     }
 
