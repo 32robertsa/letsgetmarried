@@ -32,7 +32,7 @@ class Templates(request: Request) {
   private val weekday     = DateTimeFormatter.ofPattern("EEEE")
   private val timefmt     = DateTimeFormatter.ofPattern("h:mm a")
 
-  private val divider = div(cls:="divider", (0 until 3).map(_ => img(src:="/static/diamond.svg")))
+  private val divider = div(cls:="divider", (1 until 4).map(i => img(src:=s"/static/flower2_$i.svg")))
 
   private val dialog = tag("dialog")(attr("closedby"):="any")
   private def openDialog(id: String) = s"""document.getElementById("$id").showModal(); return false;"""
@@ -54,18 +54,19 @@ class Templates(request: Request) {
     script(src:="/static/konami.js"),
     if (request.cookies.exists(_.name == "mazda")) link(rel:="stylesheet", href:="/static/mazda.css") else frag(),
     if (request.cookies.exists(_.name == "neko")) script(src:="/static/neko.js") else frag(),
-    link(rel:="icon", `type`:="image/png", href:="/static/favicon.jpg"),
+    link(rel:="icon", `type`:="image/svg+xml", href:="/static/favicon.svg"),
     link(rel:="stylesheet", href:=s"/static/style.css"),
   )
 
   private def _header(currentPage: String) = header(
-    p(cls:="suites",
-      Seq("heart", "club", "diamond", "spade").map(suite => img(src:=s"/static/$suite.png"))
+    p(cls:="flowers",
+      //  Seq("ranunculus", "babysbreath", "hydrangea").map(flower => img(src:=s"/static/$flower.png"))
+      (1 until 4).map(i => img(src:=s"/static/flower2_$i.svg"))
     ),
-    if (model.Details.underConstruction) h3("Website under construction - information subject to change") else frag(),
+    if (model.Details.underConstruction) h6("Website under construction - information subject to change") else frag(),
     h1(s"${model.Details.groom.split(" ").head} & ${model.Details.bride.split(" ").head}"),
     h3(s"${fullformat.format(model.Details.date)} • ${model.Details.location}"),
-    h3({
+    h4({
       val days = ChronoUnit.DAYS.between(LocalDate.now(), model.Details.date)
       if (days == 0) "Today's the day! The sun is shining, the tank is clean!"
       else s"$days days to go!"
@@ -77,11 +78,12 @@ class Templates(request: Request) {
 
   private def _footer() = footer(
     divider,
-    h1(cls:="underline", s"${model.Details.groom.head}&${model.Details.bride.head}"),
+    //h1(cls:="underline", s"${model.Details.groom.head}&${model.Details.bride.head}"),
+    h1(cls:="underline", s"Æ"),
     shortformat.format(model.Details.date),
-    p("Created from scratch"),
+    p("Created from code originally written by Noah Rosamilia"),
     p("Getting married? ", a(href:="https://github.com/ivoah/letsgetmarried", "Create your wedding website for free.")),
-    p("up-up-down-down-left-right-left-right-b-a")
+    p("Neither confusing the Persons nor dividing the Essence")
   )
 
   private def page(name: String, _title: Option[String] = None)(content: Frag*) = doctype("html")(html(
@@ -111,14 +113,20 @@ class Templates(request: Request) {
 
   def home(): String = page("Home")(
     img(src:=model.Details.image),
-    h2(s"The wedding of ${model.Details.groom} & ${model.Details.bride}"),
-    h3(fullformat.format(model.Details.date)),
-    for (location <- model.Details.locations) yield div(cls:="location",
-      h3(location.time),
-      div(
-        h3(location.name),
-        a(href:=location.link, Markdown.render(location.address)),
-        Markdown.render(location.details)
+    h3("The wedding of"),
+    h2(s"${model.Details.groom}"),
+    h3("and"),
+    h2(s"${model.Details.bride}"),
+    h4(fullformat.format(model.Details.date)),
+    for (location <- model.Details.locations) yield frag(
+      h4(location.name),
+      div(cls:="location",
+        img(src:=location.image),
+        div(
+          h4(location.time),
+          a(href:=location.link, Markdown.render(location.address)),
+          Markdown.render(location.details)
+        )
       )
     )
   )
@@ -133,7 +141,8 @@ class Templates(request: Request) {
   def party(): String = {
     def partyMember(member: model.PartyMember) = div(
       div(
-        h3(member.name, br(), member.role),
+        h2(member.name),
+        h4(member.role),
         img(src:=member.image),
         Markdown.render(member.bio)
       )

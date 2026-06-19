@@ -6,7 +6,7 @@
 
 body {
   box-sizing: content-box;
-  font-family: "Eczar", serif;
+  font-family: "Spectral", serif;
   max-width: 750px;
   width: 100%;
   margin: 8px auto;
@@ -14,23 +14,30 @@ body {
   text-align: center;
   color: #231f20;
   font-weight: 400;
-  background: #FCF5E5;
+  font-size: 15pt;
+  #background: #FCF5E5;
+  background: #e1f1fd;
   letter-spacing: 2px;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: "IM Fell English SC", serif;
+/*h1, h2, h3, h4, h5, h6 {*/
+h1, h2, h3 {
+  font-family: "GreatVibes", serif;
   font-weight: normal;
   margin: 8px 0;
 }
 
 h1 {
-  font-size: 42pt;
+  font-size: 54pt;
   letter-spacing: 6px;
 }
 
 h2 {
-  font-size: 24pt;
+  font-size: 36pt;
+}
+
+h3 {
+  font-size: 22pt;
 }
 
 a, input[type=submit], input[type=image], .hoverGlow {
@@ -108,10 +115,10 @@ dialog {
 }
 
 header {
-  .suites {
+  .flowers {
     display: flex;
     justify-content: center;
-    margin: 100px 0;
+    margin: 40px 0;
 
     > img {
       width: 100px;
@@ -160,25 +167,29 @@ footer {
   text-align: center;
   img {
     display: inline;
-    width: 16px;
+    width: 20px;
   }
 }
 
 #home {
-  .location {
-    border-top: 1px #AAA solid;
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    text-align: left;
+    .location {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	border-top: 1px #AAA solid;
+	gap: 10px;
 
-    > h3 {
-      text-align: right;
+	> img {
+	    width: 150px;   
+	    justify-self: end;
+	}
+	> div {
+	    text-align: left;
+	}
     }
 
-    > * {
-      flex-basis: 50%;
-    }
+  > img {
+      width: 80%;
+      margin: 0 auto;
   }
 }
 

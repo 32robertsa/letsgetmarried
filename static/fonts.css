@@ -13,3 +13,51 @@
   font-display: swap;
   src: url(/static/IMFellEnglishSC.ttf) format('truetype');
 }
+
+@font-face {
+  font-family: 'MonteCarlo';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/static/MonteCarlo-Regular.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'RobotoSerif';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/static/RobotoSerif-VariableFont_GRAD,opsz,wdth,wght.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'GreatVibes';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/static/GreatVibes-Regular.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'PinyonScript';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/static/PinyonScript-Regular.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Spectral';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/static/Spectral-Regular.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Forum';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/static/Forum-Regular.ttf) format('truetype');
+}

@@ -4,10 +4,13 @@
 .vscode/
 out/
 
-photos/
+
 originals/
 application.conf
 details.yaml
 seating.yaml
 database.db
 static/neko.js
+
+
+*~

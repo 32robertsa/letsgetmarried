@@ -48,7 +48,7 @@ private case class YamlDetails(
 
 case class InvitationDetails(tagline: String, parents: String, details: String, url: String, deadline: LocalDate) derives YamlDecoder
 case class ProgramDetails(ceremony: Seq[Seq[String]], pastors: Seq[String], pianist: String, ushers: Seq[String], flowerGirl: String, ringBearer: String, reception: Seq[Seq[String]], thanks: String) derives YamlCodec
-case class Location(name: String, time: String, address: String, link: String, details: String) derives YamlCodec
+case class Location(name: String, image: String, time: String, address: String, link: String, details: String) derives YamlCodec
 case class Story(title: String, image: String, body: String) derives YamlCodec
 case class PartyMember(name: String, role: String, image: String, bio: String) derives YamlCodec
 case class Photo(image: String, caption: Option[String]) derives YamlCodec
