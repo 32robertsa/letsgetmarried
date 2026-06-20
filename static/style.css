@@ -7,7 +7,7 @@
 body {
   box-sizing: content-box;
   font-family: "Spectral", serif;
-  max-width: 750px;
+  max-width: 1000px;
   width: 100%;
   margin: 8px auto;
   padding: 50px;
@@ -17,7 +17,7 @@ body {
   font-size: 15pt;
   #background: #FCF5E5;
   background: #e1f1fd;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
 }
 
 /*h1, h2, h3, h4, h5, h6 {*/
@@ -158,6 +158,15 @@ footer {
   border-bottom: 2px solid;
 }
 
+.special {
+  font-family: "GreatVibes";
+  border-bottom: 2px solid;
+}
+
+.nomargin {
+  margin: 0;
+}
+
 .markdown {
   text-align: justify;
   text-indent: 2em;
@@ -233,7 +242,7 @@ footer {
 
 #photos {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 
   figure {
     margin: 0;

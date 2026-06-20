@@ -39,13 +39,13 @@ class Templates(request: Request) {
   private def closeDialog(id: String) = s"""document.getElementById("$id").close(); return false;"""
 
   private val tabs = Seq(
-    "Home" -> "/",
-    "Our Story" -> "/story",
-    "Wedding Party" -> "/party",
-    "Photos" -> "/photos",
-    "Registry" -> "/registry",
-    "RSVP" -> "/rsvp",
-    "Hotels" -> "/hotels"
+    "Home • Hjem" -> "/",
+    "Our Story • Vores Historie" -> "/story",
+    "Wedding Party • Bryllupsgruppe" -> "/party",
+    "Photos • Billeder" -> "/photos",
+    "Registry • Ønskeseddel" -> "/registry",
+    "RSVP • S.U." -> "/rsvp",
+    "Hotels • Hoteller" -> "/hotels"
   )
 
   private def _head(_title: String) = head(
@@ -72,14 +72,18 @@ class Templates(request: Request) {
       else s"$days days to go!"
     }),
     div(id:="tabbar", for ((name, address) <- tabs) yield {
-      a(cls:=(if (name == currentPage) "tab underline" else "tab"), href:=address, name)
+      val parts = name.split(" • ", 2)
+      a(cls:=(if (name == currentPage) "tab underline" else "tab"), href:=address,
+        h4(cls:="nomargin", parts(0)),
+        h5(cls:="nomargin", parts(1))
+      )
     })
   )
 
   private def _footer() = footer(
     divider,
     //h1(cls:="underline", s"${model.Details.groom.head}&${model.Details.bride.head}"),
-    h1(cls:="underline", s"Æ"),
+    h1(cls:="special", s"Æ"),
     shortformat.format(model.Details.date),
     p("Created from code originally written by Noah Rosamilia"),
     p("Getting married? ", a(href:="https://github.com/ivoah/letsgetmarried", "Create your wedding website for free.")),
@@ -113,9 +117,9 @@ class Templates(request: Request) {
 
   def home(): String = page("Home")(
     img(src:=model.Details.image),
-    h3("The wedding of"),
+    h3("The wedding of • Brylluppet af"),
     h2(s"${model.Details.groom}"),
-    h3("and"),
+    h3("and • og"),
     h2(s"${model.Details.bride}"),
     h4(fullformat.format(model.Details.date)),
     for (location <- model.Details.locations) yield frag(
