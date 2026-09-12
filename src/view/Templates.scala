@@ -33,8 +33,8 @@ class Templates(request: Request) {
   private val timefmt     = DateTimeFormatter.ofPattern("h:mm a")
 
   //private val divider = div(cls:="divider", (1 until 4).map(i => img(src:=s"/static/flower2_$i.svg")))
-  //private val divider = div(cls:="divider", img(src:="/static/watercolor_yellow_blue_flower_small.png"))
-  private val divider = div(cls:="divider", img(src:="/static/new_flower_test.png"))
+  private val divider = div(cls:="divider", img(src:="/static/watercolor_yellow_blue_flower_small.png"))
+  //private val divider = div(cls:="divider", img(src:="/static/new_flower_test.png"))
 
   private val dialog = tag("dialog")(attr("closedby"):="any")
   private def openDialog(id: String) = s"""document.getElementById("$id").showModal(); return false;"""
@@ -66,8 +66,8 @@ class Templates(request: Request) {
     //  //  Seq("ranunculus", "babysbreath", "hydrangea").map(flower => img(src:=s"/static/$flower.png"))
     //  (1 until 4).map(i => img(src:=s"/static/flower2_$i.svg"))
     //),
-    //p(cls:="flowers", img(src:="/static/watercolor_yellow_blue_flower_big.png")),
-    p(cls:="flowers", img(src:="/static/new_flower_test.png")),
+    p(cls:="flowers", img(src:="/static/watercolor_yellow_blue_flower_big.png")),
+    //p(cls:="flowers", img(src:="/static/new_flower_test.png")),
     if (model.Details.underConstruction) h6("Website under construction - information subject to change") else frag(),
     //h1(s"${model.Details.groom.split(" ").head} & ${model.Details.bride.split(" ").head}"),
     h1(s"${model.Details.bride.split(" ").head} & ${model.Details.groom.split(" ").head}"),
@@ -299,7 +299,7 @@ class Templates(request: Request) {
     p(model.Details.hotelNotes),
     divider,
     model.Details.hotels.map { hotel =>
-      Markdown.render(s"${hotel.name}  \n[${hotel.address}](${hotel.link})")
+      Markdown.render(s"\n[${hotel.name}](${hotel.link}) \n${hotel.address}\n${hotel.desc}")
     }
   )
 

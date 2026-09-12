@@ -67,7 +67,7 @@ enum InviteStatus(val key: String) {
 }
 
 case class Invitation(name: String, people: Seq[String], children: InviteStatus) derives YamlDecoder
-case class Hotel(name: String, address: String, link: String) derives YamlCodec
+case class Hotel(name: String, address: String, link: String, desc: String) derives YamlCodec
 
 val Details = Source.fromResource("details.yaml").getLines().mkString("\n").as[YamlDetails] match {
   case Left(err) => throw err
