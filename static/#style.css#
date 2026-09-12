@@ -1,0 +1,431 @@
+@import url('/static/fonts.css');
+
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
+body {
+  box-sizing: content-box;
+  font-family: "Montserrat", serif;
+  max-width: 1000px;
+  width: 100%;
+  margin: 8px auto;
+  padding: 50px;
+  text-align: center;
+  color: #231f20;
+  font-weight: 400;
+  font-size: 15pt;
+  /*background: #FCF5E5;
+  #background: #e1f1fd;
+  #background: #aad8ff; #sky blue
+  #b3edfe
+  soft blue #e8edfd #f3f7fc
+  off whites #fdfcf3 #fffaf0 #fff8dc
+  off white blue #f9f9f9
+  off white pinks #fbf7f5 #f9f1f1
+ */
+  background: ; 
+  #background-image: url(/static/bkg1_crop.jpg);
+  #background-repeat: repeat;
+  #background-size: 1000px;
+  letter-spacing: 1px;
+}
+
+/*h1, h2, h3, h4, h5, h6 {*/
+h1, h2, h3 {
+  font-family: "Imperial", serif;
+  font-weight: normal;
+  margin: 8px 0;
+}
+
+h1 {
+  font-size: 100pt;
+  letter-spacing: 0px;
+}
+
+h2 {
+    font-size: 45pt;
+}
+
+h3 {
+    font-size: 35pt;
+}
+
+h4 {
+  font-size: 20pt;
+  margin: 12px 0;
+}
+
+h5 {
+  font-size: 14pt;
+  margin: 8px 0;
+}
+
+h6 {
+  font-size: 12pt;
+}
+
+a, input[type=submit], input[type=image], .hoverGlow {
+  cursor: pointer;
+  color: inherit;
+  transition-property: filter, border-bottom;
+  transition-duration: 200ms;
+}
+
+a:hover, input[type=submit]:hover, input[type=image]:hover, .hoverGlow:hover {
+  filter: drop-shadow(0px 0px 1.5px black);
+}
+
+input[type=search], textarea, input[type=submit], .button {
+  display: block;
+  width: 100%;
+  font-family: "Eczar", serif;
+  font-size: 12pt;
+  margin: 5px 0;
+}
+
+input[type=submit], .button {
+  color: white;
+  border: none;
+  border-radius: 5px;
+  background: darkblue;
+  text-align: center;
+  letter-spacing: normal;
+  text-decoration: none;
+}
+
+img {
+  display: block;
+  width: 100%;
+  object-fit: cover;
+}
+
+ul {
+  text-align: left;
+}
+
+dialog {
+  position: fixed;
+  max-width: 750px;
+  margin-top: 0;
+  margin-bottom: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  border: black solid 2px;
+  border-radius: 5px;
+}
+
+::backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+#settings {
+  fieldset {
+    text-align: right;
+    * {
+      text-align: left;
+    }
+  }
+
+  &::backdrop {
+    background-image: linear-gradient(
+            45deg,
+            magenta,
+            rebeccapurple,
+            dodgerblue,
+            green
+    );
+    opacity: 0.75;
+  }
+}
+
+header {
+  .flowers {
+    display: flex;
+    justify-content: center;
+    margin: 40px 0;
+
+    > img {
+      width: 650px;
+    }
+  }
+  > #tabbar {
+    margin: 15px 0 35px 0;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    text-transform: none;
+  }
+}
+
+footer {
+  margin-top: 50px;
+
+  > h1 {
+    width: fit-content;
+    margin: auto;
+  }
+
+  > p {
+    font-size: 8pt;
+  }
+}
+
+.tab {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 0 solid;
+  /*transition: all 200ms;*/
+}
+
+.underline, .tab:hover {
+  border-bottom: 2px solid;
+}
+
+.special {
+  font-family: "GreatVibes";
+  border-bottom: 2px solid;
+  font-size: 60pt;
+}
+
+.nomargin {
+  margin: 0;
+}
+
+.markdown {
+  text-align: justify;
+  text-indent: 2em;
+}
+
+.divider {
+  text-align: center;
+  img {
+    display: inline;
+    width: 125px; 
+  }
+}
+
+#home {
+    .location {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	border-top: 1px #AAA solid;
+	gap: 10px;
+
+	> img {
+	    width: 150px;   
+	    justify-self: end;
+	}
+	> div {
+	    text-align: left;
+	}
+    }
+
+  > img {
+      width: 60%;
+      margin: 0 auto;
+  }
+}
+
+#our_story {
+  img {
+    display: inline;
+    width: 60%;
+  }
+}
+
+#wedding_party {
+  > div {
+    display: flex;
+    flex-wrap: wrap;
+
+    > div > div {
+      margin: 25px;
+
+      > h3 {
+        font-weight: bold;
+      }
+
+      > p {
+        text-align: justify;
+        text-indent: 2em;
+      }
+
+      > img {
+	  width: 200px;
+	  margin: 0 auto;
+      }
+    }
+
+    @media(min-width: 500px) {
+      > div {
+        flex-basis: 50%;
+      }
+    }
+  }
+}
+
+#photos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+
+  figure {
+    margin: 0;
+    width: 75%;
+    place-self: center;
+    background: white;
+    border: solid 10px white;
+
+    transition-property: width, transform;
+    transition-duration: 200ms;
+  }
+
+  figure:hover {
+    width: min(200%, 100vw);
+    transform: rotate(0deg) !important;
+    z-index: 1;
+  }
+
+  figure > img {
+    margin-bottom: 10px;
+  }
+
+  figure > div {
+    display: grid;
+    grid-template-columns: 1fr 15px;
+    align-items: end;
+  }
+}
+
+#registry {
+  text-align: left;
+
+  .centered {
+    text-align: center;
+  }
+
+  #registryItems {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    /*grid-auto-rows: 300px;*/
+
+    .disabled {
+      filter: brightness(60%);
+    }
+
+    > div {
+      height: 100%;
+      display: grid;
+      grid-template-areas: "center";
+      place-items: center;
+      overflow: hidden;
+      border: 1px solid lightgray;
+      border-radius: 5px;
+
+      * {
+        grid-area: center;
+      }
+
+      > div {
+        height: 100%;
+        background: white;
+      }
+
+      > img {
+        z-index: 1;
+      }
+
+      img {
+        aspect-ratio: 1/1;
+      }
+
+      .details {
+        height: 10rem;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+    }
+  }
+
+  dialog > div {
+    display: grid;
+    grid-template: 15px auto / auto 15px;
+
+    p {
+      margin: 0;
+    }
+
+    > :nth-child(1) {
+      grid-area: 1 / 2;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+    }
+
+    > :nth-child(2) {
+      grid-area: 1 / 1 / -1 / -1;
+      img {
+        max-width: 25rem;
+      }
+    }
+  }
+}
+
+#rsvp {
+  max-width: 500px;
+  margin: auto;
+
+  form {
+    text-align: left;
+  }
+}
+
+#rsvps {
+  details {
+    margin: 2px 0;
+
+    summary {
+      display: grid;
+      grid-template-columns: 9fr 1fr;
+      gap: 2px;
+      cursor: pointer;
+    }
+  }
+
+  .coming > * {
+    background-color: green;
+  }
+
+  .notComing > * {
+    background-color: red;
+  }
+
+  .noResponse > * {
+    background-color: yellow;
+  }
+
+  .rsvpDetails {
+    text-align: left;
+  }
+}
+
+#gifts {
+  details {
+    margin: 2px 0;
+
+    summary {
+      display: grid;
+      grid-template-columns: 9fr 1fr;
+      gap: 2px;
+      cursor: pointer;
+    }
+  }
+
+  summary > * {
+    background-color: green;
+  }
+}
