@@ -38,17 +38,23 @@ private case class YamlDetails(
   photos: Seq[Photo],
   registryAddress: String,
   registryNotes: String,
-  registry: Seq[RegistryItem],
-  invitations: Seq[Invitation],
+  /*registry: Seq[RegistryItem],
+  invitations: Seq[Invitation],*/
   hotelNotes: String,
   hotels: Seq[Hotel]
+) derives YamlDecoder {}
+
+
+private case class PullYamlDetails(
+  registry: Seq[RegistryItem],                                                                                                                                                       
+  invitations: Seq[Invitation],
 ) derives YamlDecoder {
   require(registry.distinctBy(_.id).length == registry.length, "Duplicate id in registry list")
 }
 
 case class InvitationDetails(tagline: String, parents: String, details: String, url: String, deadline: LocalDate) derives YamlDecoder
 case class ProgramDetails(ceremony: Seq[Seq[String]], pastors: Seq[String], pianist: String, ushers: Seq[String], flowerGirl: String, ringBearer: String, reception: Seq[Seq[String]], thanks: String) derives YamlCodec
-case class Location(name: String, image: String, time: String, address: String, link: String, details: String) derives YamlCodec
+case class Location(name: String, title: String, image: String, time: String, address: String, link: String, details: String) derives YamlCodec
 case class Story(title: String, image: String, body: String) derives YamlCodec
 case class PartyMember(name: String, role: String, image: String, bio: String) derives YamlCodec
 case class Photo(image: String, caption: Option[String]) derives YamlCodec
@@ -66,6 +72,11 @@ case class Hotel(name: String, address: String, link: String) derives YamlCodec
 val Details = Source.fromResource("details.yaml").getLines().mkString("\n").as[YamlDetails] match {
   case Left(err) => throw err
   case Right(details) => details
+}
+
+val PullDetails = Source.fromResource("pullfromsheets.yaml").getLines().mkString("\n").as[PullYamlDetails] match {
+  case Left(err) => throw err
+  case Right(pulldetails) => pulldetails
 }
 
 val Seating = Source.fromResource("seating.yaml").getLines().mkString("\n").as[Map[String, Seq[String]]] match {

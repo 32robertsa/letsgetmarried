@@ -1,6 +1,6 @@
 package net.ivoah.letsgetmarried
 package view
-
+    
 import scala.util.Random
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
@@ -28,28 +28,31 @@ class Templates(request: Request) {
   )
 
   private val fullformat  = DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy")
-  private val shortformat = DateTimeFormatter.ofPattern("M.d.y")
+  private val shortformat = DateTimeFormatter.ofPattern("MM.dd.yyyy")
   private val weekday     = DateTimeFormatter.ofPattern("EEEE")
   private val timefmt     = DateTimeFormatter.ofPattern("h:mm a")
 
-  private val divider = div(cls:="divider", (1 until 4).map(i => img(src:=s"/static/flower2_$i.svg")))
+  //private val divider = div(cls:="divider", (1 until 4).map(i => img(src:=s"/static/flower2_$i.svg")))
+  //private val divider = div(cls:="divider", img(src:="/static/watercolor_yellow_blue_flower_small.png"))
+  private val divider = div(cls:="divider", img(src:="/static/new_flower_test.png"))
 
   private val dialog = tag("dialog")(attr("closedby"):="any")
   private def openDialog(id: String) = s"""document.getElementById("$id").showModal(); return false;"""
   private def closeDialog(id: String) = s"""document.getElementById("$id").close(); return false;"""
 
   private val tabs = Seq(
-    "Home • Hjem" -> "/",
-    "Our Story • Vores Historie" -> "/story",
-    "Wedding Party • Bryllupsgruppe" -> "/party",
-    "Photos • Billeder" -> "/photos",
-    "Registry • Ønskeseddel" -> "/registry",
+    "Home • hjemmeside" -> "/",
+    "Our Story • vores historie" -> "/story",
+    "Wedding Party • bryllupsgruppe" -> "/party",
+    "Photos • billeder" -> "/photos",
+    "Registry • ønskeseddel" -> "/registry",
     "RSVP • S.U." -> "/rsvp",
-    "Hotels • Hoteller" -> "/hotels"
+    "Hotels • hoteller" -> "/hotels"
   )
 
   private def _head(_title: String) = head(
-    title(s"${model.Details.groom.split(" ").head} & ${model.Details.bride.split(" ").head} - $_title"),
+    //title(s"${model.Details.groom.split(" ").head} & ${model.Details.bride.split(" ").head} - $_title"),
+    title(s"${model.Details.bride.split(" ").head} & ${model.Details.groom.split(" ").head} - $_title"),
     meta(name:="viewport", content:="width=device-width", attr("initial-scale"):="1.0"),
     script(src:="/static/konami.js"),
     if (request.cookies.exists(_.name == "mazda")) link(rel:="stylesheet", href:="/static/mazda.css") else frag(),
@@ -59,23 +62,27 @@ class Templates(request: Request) {
   )
 
   private def _header(currentPage: String) = header(
-    p(cls:="flowers",
-      //  Seq("ranunculus", "babysbreath", "hydrangea").map(flower => img(src:=s"/static/$flower.png"))
-      (1 until 4).map(i => img(src:=s"/static/flower2_$i.svg"))
-    ),
+    //p(cls:="flowers",
+    //  //  Seq("ranunculus", "babysbreath", "hydrangea").map(flower => img(src:=s"/static/$flower.png"))
+    //  (1 until 4).map(i => img(src:=s"/static/flower2_$i.svg"))
+    //),
+    //p(cls:="flowers", img(src:="/static/watercolor_yellow_blue_flower_big.png")),
+    p(cls:="flowers", img(src:="/static/new_flower_test.png")),
     if (model.Details.underConstruction) h6("Website under construction - information subject to change") else frag(),
-    h1(s"${model.Details.groom.split(" ").head} & ${model.Details.bride.split(" ").head}"),
+    //h1(s"${model.Details.groom.split(" ").head} & ${model.Details.bride.split(" ").head}"),
+    h1(s"${model.Details.bride.split(" ").head} & ${model.Details.groom.split(" ").head}"),
     h3(s"${fullformat.format(model.Details.date)} • ${model.Details.location}"),
-    h4({
+    h5({
       val days = ChronoUnit.DAYS.between(LocalDate.now(), model.Details.date)
       if (days == 0) "Today's the day! The sun is shining, the tank is clean!"
       else s"$days days to go!"
     }),
+    divider,
     div(id:="tabbar", for ((name, address) <- tabs) yield {
       val parts = name.split(" • ", 2)
       a(cls:=(if (name == currentPage) "tab underline" else "tab"), href:=address,
-        h4(cls:="nomargin", parts(0)),
-        h5(cls:="nomargin", parts(1))
+        h5(cls:="nomargin", parts(0)),
+        h6(cls:="nomargin", parts(1))
       )
     })
   )
@@ -117,17 +124,18 @@ class Templates(request: Request) {
 
   def home(): String = page("Home")(
     img(src:=model.Details.image),
-    h3("The wedding of • Brylluppet af"),
+    h5("The wedding of • Brylluppet af"),
     h2(s"${model.Details.groom}"),
-    h3("and • og"),
+    h5("and • og"),
     h2(s"${model.Details.bride}"),
-    h4(fullformat.format(model.Details.date)),
+    h5(fullformat.format(model.Details.date)),
     for (location <- model.Details.locations) yield frag(
       h4(location.name),
       div(cls:="location",
         img(src:=location.image),
         div(
-          h4(location.time),
+          h5(location.title),
+          h5(location.time),
           a(href:=location.link, Markdown.render(location.address)),
           Markdown.render(location.details)
         )
@@ -175,7 +183,7 @@ class Templates(request: Request) {
   )
 
   def registry(items: Seq[(model.RegistryItem, Boolean)], sortBy: String): String = page("Registry")(
-    if (model.Details.registry.isEmpty) p(textAlign.center, "Coming soon!")
+    if (model.PullDetails.registry.isEmpty) p(textAlign.center, "Coming soon!")
     else frag(
       fieldset(
         legend("Please send all gifts to:"),
@@ -246,7 +254,7 @@ class Templates(request: Request) {
   )
 
   def rsvp(): String = page("RSVP")(
-    if (model.Details.invitations.isEmpty) {
+    if (model.PullDetails.invitations.isEmpty) {
       p(textAlign.center, "Coming soon!")
     } else {
       form(action:="/rsvp", method:="GET",
@@ -281,7 +289,7 @@ class Templates(request: Request) {
           )
           case _ => frag()
         },
-        label("Regards:", textarea(name:="regards", rsvp.map(_.regards).getOrElse(""))),
+        label("Notes (especially dietary restrictions):", textarea(name:="regards", rsvp.map(_.regards).getOrElse(""))),
         input(`type`:="submit", value:=s"${if (rsvp.nonEmpty) "Update" else "Save"} RSVP")
       )
     )
@@ -309,11 +317,11 @@ class Templates(request: Request) {
       s"Infants: ${rsvps.map(_.infants).sum}", br(),
       s"Total: ${rsvps.map(_.total).sum} (${rsvps.count(_.total > 0)})", br(),
       s"Outstanding: ${
-        val outstanding = model.Details.invitations.filter(i => !rsvps.exists(r => r.name == i.name))
+        val outstanding = model.PullDetails.invitations.filter(i => !rsvps.exists(r => r.name == i.name))
         s"${outstanding.map(_.people.length).sum}${if (outstanding.exists(_.children == model.InviteStatus.Invited)) "+" else ""} (${outstanding.length})"
       }"
     ),
-    for (invite <- model.Details.invitations) yield {
+    for (invite <- model.PullDetails.invitations) yield {
       val rsvp = rsvps.find(_.name == invite.name)
       val coming = rsvp match {
         case Some(r) if r.total == 0 => "notComing"
@@ -339,7 +347,7 @@ class Templates(request: Request) {
           span(s"${gifts.length}")
         ),
         ul(gifts.map(gift => frag(
-          li(attr("title"):=gift.id, s"${model.Details.registry.find(_.id == gift.id).get.name}", gift.amount.map(g => s": $$$g").getOrElse("")),
+          li(attr("title"):=gift.id, s"${model.PullDetails.registry.find(_.id == gift.id).get.name}", gift.amount.map(g => s": $$$g").getOrElse("")),
           if (gift.notes.nonEmpty) p(gift.notes) else frag()
         )))
       )

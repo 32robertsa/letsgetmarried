@@ -1,0 +1,98 @@
+underConstruction: true
+contact: wedding@ae-roberts.com
+groom: Andrew Curtis Roberts
+bride: Emma Møller Neihart
+image: photos/together_engagement.jpeg
+date: '2027-04-24T14:00:00'
+location: Pittsburgh, Pennsylvania
+invitationDetails:
+  tagline: Together with their families...
+  parents: Parent names line
+  details: Saturday, April 24th, 2027 at 2:00 PM
+  url: https://rsvp-link.com
+  deadline: '2027-03-01'
+programDetails:
+  ceremony:
+  - - Prelude
+    - 1:45 PM
+  - - Processional
+    - 2:00 PM
+  pastors:
+  - Pastor Name
+  pianist: Pianist Name
+  ushers:
+  - Usher One
+  - Usher Two
+  flowerGirl: Flower Girl Name
+  ringBearer: Ring Bearer Name
+  reception:
+  - - Cocktail Hour
+    - 5:00 PM
+  - - Dinner
+    - 6:00 PM
+  thanks: Thank you message here.
+locations:
+- name: Ceremony
+  title: First Baptist Church of Pittsburgh
+  image: photos/fbc.jpg
+  time: 2:00pm - 3:00pm
+  address: 159 N Bellefield Ave, Pittsburgh, PA 15213
+  link: https://maps.app.goo.gl/Tu9pYE5rqzDTeG1HA
+  details: Arrive by 1:45pm
+- name: Reception
+  title: Some Other Place
+  image: photos/fbc.jpg
+  time: 3:00pm
+  address: 123 Main St, City, State
+  link: https://maps.google.com/...
+  details: Cocktail hour starts 5:00pm
+story:
+  title: How We Met
+  image: photos/together_official.jpeg
+  body: We met at church.
+bridesmaids:
+- name: Name
+  role: Maid of Honor
+  image: photos/moh_photo.svg
+  bio: She's the woman.
+- name: Name
+  role: Bridesmaid
+  image: photos/moh_photo.svg
+  bio: She's chill.
+- name: Name
+  role: Bridesmaid
+  image: photos/moh_photo.svg
+  bio: She's fabulous.
+groomsmen:
+- name: Name
+  role: Best Man
+  image: photos/bm_photo.svg
+  bio: He's the man.
+- name: Name
+  role: Groomsman
+  image: photos/bm_photo.svg
+  bio: He's nice.
+- name: Name
+  role: Groomsman
+  image: photos/bm_photo.svg
+  bio: He's distinguished.
+photos:
+- image: photos/together_first_2.jpeg
+  caption: Our third date
+- image: photos/together_fallingwater.jpeg
+  caption: At Fallingwater
+- image: photos/together_philly.jpeg
+  caption: In Philadelphia over Thanksgiving
+- image: photos/together_fjerritslev.jpeg
+  caption: In Fjerritslev, Denmark
+- image: photos/together_denmark_cafe.jpeg
+  caption: In Aarhus, Denmark
+- image: photos/together_engagement_cute.jpeg
+  caption: After getting engaged
+registryAddress: 123 Future Home Lane
+registryNotes: Notes about registry.
+hotelNotes: Notes about accommodations.
+hotels:
+- name: Hotel Name
+  address: 456 Hotel Rd, City, State
+  link: https://hotel-booking-link.com
