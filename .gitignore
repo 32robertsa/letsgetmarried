@@ -7,7 +7,6 @@ out/
 
 originals/
 application.conf
-details.yaml
 seating.yaml
 database.db
 static/neko.js
@@ -16,3 +15,4 @@ static/neko.js
 *~
 web/*.json
 web/photos/*
+*.yaml
