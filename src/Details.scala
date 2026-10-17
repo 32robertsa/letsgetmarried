@@ -1,26 +1,52 @@
 package net.ivoah.letsgetmarried
-package model
 
-import org.virtuslab.yaml.*
+import play.api.libs.json.*
 
 import java.time.{LocalDate, LocalDateTime}
+import scalatags.Text.all.*
+
+import org.virtuslab.yaml.*
 import java.io.File
 import scala.io.Source
 import scala.math.Ordering.Implicits.seqOrdering
 
-case class Details(
-  general: Details.General = Details.General(),
-  home: Details.Home = Details.Home(),
-  story: Details.Story = Details.Story(),
-  weddingParty: Details.WeddingParty = Details.WeddingParty(),
-  photos: Details.Photos = Details.Photos(),
-  registry: Details.Registry = Details.Registry(),
-  rsvp: Details.RSVP = Details.RSVP(),
-  hotels: Details.Hotels = Details.Hotels(),
 
-  invitation: Details.Invitation = Details.Invitation(),
-  program: Details.Program = Details.Program()
-) derives YamlCodec
+case class Code(code: String)
+given StringWrapper[Code] {
+  def init(s: String) = Code(s)
+  def content(c: Code) = c.code
+  def tag(c: Option[Code]): Tag = textarea(cls:="codeEditor", c.map(_.code))
+}
+
+case class Image(path: String)
+given StringWrapper[Image] {
+  def init(s: String) = Image(s)
+  def content(i: Image) = i.path
+  def tag(i: Option[Image]): Tag = input(i.map(value:=_.path))
+}
+given Conversion[Image, Frag] = m => img(src:=m.path)
+
+case class MultilineString(content: String)
+given StringWrapper[MultilineString] {
+  def init(s: String) = MultilineString(s)
+  def content(s: MultilineString): String = s.content
+  def tag(s: Option[MultilineString]): Tag = textarea(s.map(_.content))
+}
+given Conversion[MultilineString, Frag] = m => StringFrag(m.content)
+
+case class Details(
+  general: Details.General,
+  home: Details.Home,
+  story: Details.Story,
+  weddingParty: Details.WeddingParty,
+  photos: Details.Photos,
+  registry: Details.Registry,
+  rsvp: Details.RSVP,
+  hotels: Details.Hotels,
+
+  invitation: Details.Invitation,
+  program: Details.Program
+) derives Format, FormBuilder
 
 object Details {
   case class General(
@@ -36,6 +62,8 @@ object Details {
     location: String = "Nowhere"
   ) derives YamlCodec
 
+
+  
   case class Home(image: String = "", locations: Seq[Home.Location] = Seq()) derives YamlCodec
   object Home {
     case class Location(name: String, title: String, time: String, address: String, link: String, image: String, details: String) derives YamlCodec
