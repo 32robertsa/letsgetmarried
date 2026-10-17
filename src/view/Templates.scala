@@ -62,7 +62,6 @@ class Templates(details: model.Details, request: Request) {
 
   private def _header(currentPage: String) = header(
     //p(cls:="flowers", img(src:="/static/watercolor_yellow_blue_flower_big.png")),
-    =======
     p(cls:="headerImages", details.general.headerImages.map(s => img(src:=s))),
     if (details.general.underConstruction) h3("Website under construction - information subject to change") else frag(),
     h1(s"${details.general.bride.split(" ").head} & ${details.general.groom.split(" ").head}"),

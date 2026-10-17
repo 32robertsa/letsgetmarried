@@ -36,7 +36,7 @@ object Details {
 
   case class Home(image: String = "", locations: Seq[Home.Location] = Seq()) derives YamlCodec
   object Home {
-    case class Location(name: String, time: String, address: String, link: String, details: String) derives YamlCodec
+    case class Location(name: String, title: String, time: String, address: String, link: String, image: String, details: String) derives YamlCodec
   }
 
   case class Story(title: String = "Our Story", image: String = "", body: String = "We met and falled in love.") derives YamlCodec
@@ -65,7 +65,7 @@ object Details {
   
   case class Hotels(notes: String = "", hotels: Seq[Hotels.Hotel] = Seq()) derives YamlCodec
   object Hotels {
-    case class Hotel(name: String, address: String, link: String) derives YamlCodec
+    case class Hotel(name: String, address: String, link: String, desc: String) derives YamlCodec
   }
 
   case class Invitation(
