@@ -92,6 +92,13 @@ object Details {
   }
 }
 
+private case class PullYamlDetails(
+  registry: Seq[RegistryItem],
+  invitations: Seq[Invitation],
+) derives YamlDecoder {
+  require(registry.distinctBy(_.id).length == registry.length, "Duplicate id in registry list")
+}
+
 val PullDetails = Source.fromResource("pullfromsheets.yaml").getLines().mkString("\n").as[PullYamlDetails] match {
   case Left(err) => throw err
   case Right(pulldetails) => pulldetails
