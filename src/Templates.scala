@@ -1,6 +1,4 @@
 package net.ivoah.letsgetmarried
-package view
-    
 import scala.util.Random
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
@@ -20,7 +18,7 @@ extension (s: String) {
   })
 }
 
-class Templates(details: model.Details, request: Request) {
+class Templates(details: Details, request: Request) {
   given Conversion[String, StringFrag] = (s: String) => StringFrag(
     if (request.cookies.exists(_.name == "scramble")) s.scramble
     else s
@@ -57,11 +55,10 @@ class Templates(details: model.Details, request: Request) {
     if (request.cookies.exists(_.name == "neko")) script(src:="/static/neko.js") else frag(),
     link(rel:="icon", `type`:="image/svg+xml", href:="/static/favicon.svg"),
     link(rel:="stylesheet", href:=s"/static/style.css"),
-    tag("style")(raw(details.general.style))
+    details.general.style.map(css => tag("style")(raw(css.code)))
   )
 
   private def _header(currentPage: String) = header(
-    //p(cls:="flowers", img(src:="/static/watercolor_yellow_blue_flower_big.png")),
     p(cls:="headerImages", details.general.headerImages.map(s => img(src:=s))),
     if (details.general.underConstruction) h5("Website under construction - information subject to change") else frag(),
     h1(s"${details.general.bride.split(" ").head} & ${details.general.groom.split(" ").head}"),
@@ -84,10 +81,10 @@ class Templates(details: model.Details, request: Request) {
 
   private def _footer() = footer(
     divider,
-    //h1(cls:="underline", s"${details.general.groom.head}&${details.general.bride.head}"),
     h1(cls:="special", s"Æ"),
     shortformat.format(details.general.date),
     p("Created from code originally written by Noah Rosamilia"),
+    p(a(href:="/admin", "Admin page")),
     p("Getting married? ", a(href:="https://github.com/ivoah/letsgetmarried", "Create your wedding website for free.")),
     p("Neither confusing the Persons nor dividing the Essence")
   )
@@ -140,18 +137,21 @@ class Templates(details: model.Details, request: Request) {
 
   def story(): String = page("Our Story")(
     h2(details.story.title),
-    img(src:=details.story.image),
-    div(cls:="markdown", Markdown.render(details.story.body))
+    details.story.image,
+    div(cls:="markdown", details.story.body)
   )
 
-
   def party(): String = {
-    def partyMember(member: model.Details.WeddingParty.PartyMember) = div(
+    def partyMember(member: Details.WeddingParty.PartyMember) = div(
       div(
         h2(member.name),
         h4(member.role),
         img(src:=member.image),
         div(cls:="markdown", Markdown.render(member.bio))
+
+        //h3(member.name, br(), member.role),
+        //member.image,
+        //div(cls:="markdown", member.bio)
       )
     )
 
@@ -166,8 +166,8 @@ class Templates(details: model.Details, request: Request) {
   def photos(): String = page("Photos")(
     details.photos.photos.map { p =>
       figure(css("transform"):=s"rotate(${Random.between(-15.0, 15.0)}deg)",
-        img(src:=p.image),
-        div(figcaption(p.caption.map(Markdown.render(_))), a(href:=p.image, download:="", img(src:="/static/download.svg")))
+        p.image,
+        div(figcaption(p.caption), a(href:=p.image.path, download:="", img(src:="/static/download.svg")))
       )
     },
     script(raw(
@@ -177,12 +177,12 @@ class Templates(details: model.Details, request: Request) {
     ))
   )
 
-  def registry(items: Seq[(model.Details.Registry.Item, Boolean)], sortBy: String): String = page("Registry")(
+  def registry(items: Seq[(Details.Registry.Item, Boolean)], sortBy: String): String = page("Registry")(
     fieldset(
       legend("Please send all gifts to:"),
       div(cls:="centered", div(cls:="pre-wrap", details.registry.address))
     ),
-    Markdown.render(details.registry.notes),
+    details.registry.notes,
     if (details.registry.items.isEmpty) frag()
     else frag(
       divider,
@@ -202,7 +202,7 @@ class Templates(details: model.Details, request: Request) {
           frag(
             div(cls:="hoverGlow", onclick:=openDialog(item.id),
               div(cls:=(if (purchased) "disabled" else ""),
-                img(src:=item.image),
+                item.image,
                 div(cls:="details",
                   span(item.name),
                   span(item.price.map(p => f"$$$p%.2f").getOrElse("$∞"))
@@ -214,7 +214,7 @@ class Templates(details: model.Details, request: Request) {
               input(`type`:="image", onclick:=closeDialog(item.id), src:="/static/close.svg"),
               div(
                 p(item.name, item.price.map(p => f" - $$$p%.2f").getOrElse("")),
-                img(src:=item.image),
+                item.image,
                 if (!purchased) a(cls:="button", href:=item.link, target:="_blank", s"Purchase at ${URI(item.link).getHost.split("\\.").takeRight(2).mkString(".")}") else frag(),
                 input(`type`:="submit", value:=(if (purchased) "Unmark as given" else "Mark as given"), onclick:=openDialog(s"${item.id}-purchase")),
                 dialog(id:=s"${item.id}-purchase", div(
@@ -249,7 +249,7 @@ class Templates(details: model.Details, request: Request) {
   )
 
   def rsvp(): String = page("RSVP")(
-    Markdown.render(details.rsvp.notes),
+    details.rsvp.notes,
     if (details.rsvp.invitations.isEmpty) p("Coming soon!")
     else form(action:="/rsvp", method:="GET",
       input(
@@ -261,7 +261,7 @@ class Templates(details: model.Details, request: Request) {
     )
   )
 
-  def rsvpFound(invitation: model.Details.RSVP.Invitation, rsvp: Option[model.RSVP]): String = page("RSVP", Some(s"RSVP for ${invitation.name}"))(
+  def rsvpFound(invitation: Details.RSVP.Invitation, rsvp: Option[RSVP]): String = page("RSVP", Some(s"RSVP for ${invitation.name}"))(
     form(action:="/rsvp", method:="POST",
       fieldset(
         legend(s"RSVP for ${invitation.name}"),
@@ -285,22 +285,66 @@ class Templates(details: model.Details, request: Request) {
   )
 
   def hotels(): String = page("Hotels")(
-    Markdown.render(details.hotels.notes),
+    details.hotels.notes,
     divider,
-    details.hotels.hotels.map { hotel =>
-      Markdown.render(s"\n[${hotel.name}](${hotel.link}) \n${hotel.address}\n${hotel.desc}")
-    }
+
+    //details.hotels.hotels.map { hotel =>
+    //  Markdown.render(s"\n[${hotel.name}](${hotel.link}) \n${hotel.address}\n${hotel.desc}")
+    //}
+    details.hotels.hotels.map { hotel => p(
+      hotel.name, br(),
+      a(href:=hotel.link, hotel.address)
+    )}
   )
 
   def admin(): String = page("Admin")(
     ul(
-      li(a(href:="/admin/details", "Edit detials")),
-      li(a(href:="/admin/rsvps", "RSVPs")),
-      li(a(href:="/admin/gifts", "Gifts"))
+      li(a(href:="/admin/details", "Edit details")),
+      li(a(href:="/admin/gifts", "Gifts")),
+      li(a(href:="/admin/rsvps", "RSVPs"))
     )
   )
 
-  def rsvps(rsvps: Seq[model.RSVP]): String = page("RSVPs")(
+  def editDetails() = page("Edit details")(
+    form(method:="POST",
+      details.buildForm("details"),
+      div(display:="flex", style:="gap: 10px",
+        input(`type`:="submit", formaction:="#", name:="save", value:="Save"),
+        input(`type`:="submit", formaction:="/details.json", value:="Download json")
+      )
+    ),
+    script(`type`:="module", raw("""
+      import {EditorView, basicSetup} from "https://esm.sh/codemirror";
+      import {css} from "https://esm.sh/@codemirror/lang-css";
+
+      for (const textarea of document.getElementsByClassName("codeEditor")) {
+        let view = new EditorView({doc: textarea.value, extensions: [basicSetup, css()]});
+        textarea.parentNode.insertBefore(view.dom, textarea);
+        textarea.style.display = "none";
+        if (textarea.form) textarea.form.addEventListener("submit", () => {
+          textarea.value = view.state.doc.toString();
+        })
+      }
+    """))
+  )
+  
+  def gifts(allGifts: Seq[Gift]): String = page("Gifts")(
+    p(s"Total: ${allGifts.length}"),
+    for ((giver, gifts) <- allGifts.groupBy(_.purchasedBy).toSeq) yield {
+      tag("details")(
+        tag("summary")(
+          span(giver),
+          span(s"${gifts.length}")
+        ),
+        ul(gifts.map(gift => frag(
+          li(attr("title"):=gift.id, s"${details.registry.items.find(_.id == gift.id).get.name}", gift.amount.map(g => s": $$$g").getOrElse("")),
+          if (gift.notes.nonEmpty) p(gift.notes) else frag()
+        )))
+      )
+    }
+  )
+
+  def rsvps(rsvps: Seq[RSVP]): String = page("RSVPs")(
     p(
       s"Adults: ${rsvps.map(_.people.length).sum}", br(),
       s"Children: ${rsvps.map(_.children).sum}", br(),
@@ -326,59 +370,6 @@ class Templates(details: model.Details, request: Request) {
         rsvp.map(_.details).getOrElse(frag())
       )
     }
-  )
-  
-  def gifts(allGifts: Seq[model.Gift]): String = page("Gifts")(
-    p(s"Total: ${allGifts.length}"),
-    for ((giver, gifts) <- allGifts.groupBy(_.purchasedBy).toSeq) yield {
-      tag("details")(
-        tag("summary")(
-          span(giver),
-          span(s"${gifts.length}")
-        ),
-        ul(gifts.map(gift => frag(
-          li(attr("title"):=gift.id, s"${details.registry.items.find(_.id == gift.id).get.name}", gift.amount.map(g => s": $$$g").getOrElse("")),
-          if (gift.notes.nonEmpty) p(gift.notes) else frag()
-        )))
-      )
-    }
-  )
-
-  def editDetails() = page("Edit details")(
-    form(method:="POST",
-      ul(
-        li(label(input(tpe:="checkbox", name:="underConstruction", if (details.general.underConstruction) checked else frag()), " Under construction")),
-        li(label("Contact: ", input(name:="contact", value:=details.general.contact))),
-        li(label("Style", textarea(name:="style", value:=details.general.style))),
-        li("Header images", ul(
-          for (img <- details.general.headerImages) yield li(input(tpe:="file", value:=img))
-        )),
-        li(label("Groom: ", input(name:="groom", value:=details.general.groom))),
-        li(label("Bride: ", input(name:="bride", value:=details.general.bride))),
-        li(label("Date: ", input(tpe:="date", name:="date", value:=details.general.date.toString))),
-        li(label("Location: ", input(name:="location", value:=details.general.location))),
-        li("Home tab", ul(
-          li(label("Hero image: ", input(tpe:="file", name:="hero"))),
-          li("Locations", ul(
-            for ((location, i) <- details.home.locations.zipWithIndex) yield fieldset(
-              legend(s"Location ${i + 1}"),
-              ul(
-                li(label("Name: ", input(name:="locationName", value:=location.name))),
-                li(label("Time: ", input(name:="locationTime", value:=location.time))),
-                li(label("Address: ", textarea(name:="locationAddress", value:=location.address))),
-                li(label("Link: ", input(name:="locationLink", value:=location.link))),
-                li(label("Details: ", input(name:="locationDetails", value:=location.details))),
-              )
-            )
-          ))
-        )),
-        li("Story tab", ul(
-          li(label("Title: ", input(name:="storyTitle", value:=details.story.title))),
-        )),
-      ),
-      input(tpe:="submit", value:="Save"),
-      input(tpe:="submit", value:="Download yaml")
-    )
   )
 
   def invitation(): String = doctype("html")(html(
@@ -417,7 +408,7 @@ class Templates(details: model.Details, request: Request) {
                       h2(details.general.groom),
                     ),
                     p(id:="date", weekday.format(details.general.date), span(shortformat.format(details.general.date)), timefmt.format(details.general.date)),
-                    Markdown.render(details.invitation.details),
+                    details.invitation.details,
                     divider,
                     p(
                       "Get details and RSVP at", br(),
@@ -444,7 +435,7 @@ class Templates(details: model.Details, request: Request) {
   def program(): String = {
     def people(title: String, names: IterableOnce[String]) = div(
       strong(title), br(),
-      names.map(n => frag(n, br())).toSeq
+      names.iterator.map(n => frag(n, br())).toSeq
     )
 
     def schedule(schedule: Seq[Seq[String]]) = div(cls:="schedule",
@@ -469,7 +460,7 @@ class Templates(details: model.Details, request: Request) {
                 div(cls:="gridBorder side", css("grid-area"):="w", (0 until 35).map(_ => img(src:="static/diamond.svg"))),
                 div(id:="b4", cls:="border",
                   div(cls:="title", s"The Wedding Ceremony of", br(), s"${details.general.groom} & ${details.general.bride}"),
-                  fullformat.format(details.general.date) + details.home.locations.find(_.name == "Ceremony").map(" - " + _.address.split("\n").head).getOrElse(""),
+                  fullformat.format(details.general.date) + details.home.locations.find(_.name == "Ceremony").map(" - " + _.address.content.split("\n").head).getOrElse(""),
                   schedule(details.program.ceremony),
                   div(cls:="people",
                     div(
@@ -498,41 +489,41 @@ class Templates(details: model.Details, request: Request) {
         div(id:="back",
           div(
             "Reception",
-            details.home.locations.find(_.name == "Reception").map(r => Markdown.render(r.address)),
+            details.home.locations.find(_.name == "Reception").map(r => r.address),
             schedule(details.program.reception)
           ),
           div(
             "Special Thanks",
-            Markdown.render(details.program.thanks)
+            details.program.thanks
           )
         )
       )
     )).render
   }
 
-  def seating(): String = {
-    doctype("html")(html(
-      head(
-        link(rel:="stylesheet", href:=s"/static/style.css"),
-        link(rel:="stylesheet", href:=s"/static/seating.css"),
-        link(rel:="icon", `type`:="image/png", href:="/static/favicon.jpg"),
-        title("Seating labels")
-      ),
-      body(
-        for (page <- model.Seating.grouped(3).grouped(10).toSeq) yield div(cls:="page",
-          for (row <- page) yield div(cls:="row",
-            for ((name, table) <- row) yield {
-              val card = table.dropRight(1)
-              val suit = table.takeRight(1)
-              div(cls:="label",
-                span(name), span(cls:="table", card, span(cls:=suit, suit))
-              )
-            }
-          )
-        )
-      )
-    )).render
-  }
+//   def seating(): String = {
+//     doctype("html")(html(
+//       head(
+//         link(rel:="stylesheet", href:=s"/static/style.css"),
+//         link(rel:="stylesheet", href:=s"/static/seating.css"),
+//         link(rel:="icon", `type`:="image/png", href:="/static/favicon.jpg"),
+//         title("Seating labels")
+//       ),
+//       body(
+//         for (page <- Seating.grouped(3).grouped(10).toSeq) yield div(cls:="page",
+//           for (row <- page) yield div(cls:="row",
+//             for ((name, table) <- row) yield {
+//               val card = table.dropRight(1)
+//               val suit = table.takeRight(1)
+//               div(cls:="label",
+//                 span(name), span(cls:="table", card, span(cls:=suit, suit))
+//               )
+//             }
+//           )
+//         )
+//       )
+//     )).render
+//   }
 }
 
 object Templates {

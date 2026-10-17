@@ -1,5 +1,4 @@
 package net.ivoah.letsgetmarried
-package model
 
 import scalatags.Text.all.*
 import java.sql.ResultSet
@@ -21,7 +20,7 @@ case class RSVP(name: String, people: Seq[String], children: Int, infants: Int, 
 object RSVP {
   def fromResultSet(r: ResultSet): RSVP = RSVP(
     r.getString("name"),
-    r.getString("people").split(",").filter(_.nonEmpty),
+    r.getString("people").split(",").toSeq.filter(_.nonEmpty),
     r.getInt("children"),
     r.getInt("infants"),
     r.getString("regards")

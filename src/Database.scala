@@ -1,10 +1,28 @@
 package net.ivoah.letsgetmarried
-package model
 
 import net.ivoah.squall.*
+import play.api.libs.json.*
+import scala.io.Source
+import java.nio.file.{Files, Paths}
 
 object Database {
-  given Connector = Connector("jdbc:sqlite:database.db")
+  given Connector = {
+    if (Files.notExists(Paths.get("database.db"))) {
+      given Connector("jdbc:sqlite:database.db")
+      val schema = Source.fromResource("schema.sql").getLines().mkString("\n")
+      schema.sql.execute()
+      summon[Connector]
+    } else Connector("jdbc:sqlite:database.db")
+  }
+
+  def getDetails(): Details = {
+    sql"SELECT details FROM details ORDER BY date DESC LIMIT 1"
+      .query(r => Json.parse(r.getString("details")).asOpt[Details]).flatten.headOption.getOrElse(FormBuilder.default[Details])
+  }
+
+  def saveDetails(details: Details): Boolean = {
+    sql"INSERT INTO details (details, date) VALUES (${Json.stringify(Json.toJson(details))}, datetime('now', 'localtime'))".update() == 1
+  }
 
   def getAllRSVPs(): Seq[RSVP] = sql"SELECT * FROM rsvp".query(RSVP.fromResultSet)
   def findRSVP(name: String): Option[RSVP] = sql"SELECT * FROM rsvp WHERE name=$name".query(RSVP.fromResultSet).headOption
