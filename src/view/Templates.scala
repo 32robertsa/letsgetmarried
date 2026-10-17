@@ -32,7 +32,7 @@ class Templates(details: model.Details, request: Request) {
   private val timefmt     = DateTimeFormatter.ofPattern("h:mm a")
 
   //private val divider = div(cls:="divider", (1 until 4).map(i => img(src:=s"/static/flower2_$i.svg")))
-  private val divider = div(cls:="divider", img(src:="/static/watercolor_yellow_blue_flower_small.png"))
+  private val divider = div(cls:="divider", img(src:="/static/watercolor_yellow_blue_flower_small_resized.png"))
   //private val divider = div(cls:="divider", img(src:="/static/new_flower_test.png"))
 
   private val dialog = tag("dialog")(attr("closedby"):="any")
@@ -63,18 +63,19 @@ class Templates(details: model.Details, request: Request) {
   private def _header(currentPage: String) = header(
     //p(cls:="flowers", img(src:="/static/watercolor_yellow_blue_flower_big.png")),
     p(cls:="headerImages", details.general.headerImages.map(s => img(src:=s))),
-    if (details.general.underConstruction) h3("Website under construction - information subject to change") else frag(),
+    if (details.general.underConstruction) h5("Website under construction - information subject to change") else frag(),
     h1(s"${details.general.bride.split(" ").head} & ${details.general.groom.split(" ").head}"),
-    h3(s"${fullformat.format(details.general.date)} • ${details.general.location}"),
+    h3(s"${details.general.dateus} • ${details.general.datedk}"),
+    h3(s"${details.general.location}"),
     h5({
       val days = ChronoUnit.DAYS.between(LocalDate.now(), details.general.date)
       if (days == 0) "Today's the day! The sun is shining, the tank is clean!"
-      else s"$days days to go!"
+      else s"$days days to go! • dage tilbage!"
     }),
     divider,
     div(id:="tabbar", for ((name, address) <- tabs) yield {
       val parts = name.split(" • ", 2)
-      a(cls:=(if (name == currentPage) "tab underline" else "tab"), href:=address,
+      a(cls:=(if (parts(0) == currentPage) "tab underline" else "tab"), href:=address,
         h5(cls:="nomargin", parts(0)),
         h6(cls:="nomargin", parts(1))
       )
@@ -249,7 +250,7 @@ class Templates(details: model.Details, request: Request) {
 
   def rsvp(): String = page("RSVP")(
     Markdown.render(details.rsvp.notes),
-    if (details.rsvp.invitations.isEmpty) frag()
+    if (details.rsvp.invitations.isEmpty) p("Coming soon!")
     else form(action:="/rsvp", method:="GET",
       input(
         `type`:="search",

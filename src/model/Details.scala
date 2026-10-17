@@ -31,6 +31,8 @@ object Details {
     groom: String = "Groom name",
     bride: String = "Bride name",
     date: LocalDateTime = LocalDateTime.now().plusMonths(1),
+    dateus: String = "",
+    datedk: String = "",
     location: String = "Nowhere"
   ) derives YamlCodec
 
@@ -93,8 +95,8 @@ object Details {
 }
 
 private case class PullYamlDetails(
-  registry: Seq[RegistryItem],
-  invitations: Seq[Invitation],
+  registry: Seq[Details.Registry.Item],
+  invitations: Seq[Details.Invitation],
 ) derives YamlDecoder {
   require(registry.distinctBy(_.id).length == registry.length, "Duplicate id in registry list")
 }
