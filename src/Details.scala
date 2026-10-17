@@ -50,76 +50,68 @@ case class Details(
 
 object Details {
   case class General(
-    underConstruction: Boolean = true,
-    contact: String = "nobody",
-    style: String = "",
-    headerImages: Seq[String] = Seq(),
-    groom: String = "Groom name",
-    bride: String = "Bride name",
-    date: LocalDateTime = LocalDateTime.now().plusMonths(1),
-    dateus: String = "",
-    datedk: String = "",
-    location: String = "Nowhere"
-  ) derives YamlCodec
+    underConstruction: Boolean,
+    contactEmail: String,
+    style: Option[Code],
+    headerImages: Seq[Image],
+    groom: String,
+    bride: String,
+    date: LocalDateTime,
+    location: String
+  ) derives Format, FormBuilder
 
-
-  
-  case class Home(image: String = "", locations: Seq[Home.Location] = Seq()) derives YamlCodec
+  case class Home(image: Image, locations: Seq[Home.Location]) derives Format, FormBuilder
   object Home {
-    case class Location(name: String, title: String, time: String, address: String, link: String, image: String, details: String) derives YamlCodec
+    case class Location(name: String, time: String, address: MultilineString, link: String, details: Markdown) derives Format, FormBuilder
   }
 
-  case class Story(title: String = "Our Story", image: String = "", body: String = "We met and falled in love.") derives YamlCodec
+  case class Story(title: String, image: Image, body: Markdown) derives Format, FormBuilder
   
-  case class WeddingParty(bridesmaids: Seq[WeddingParty.PartyMember] = Seq(), groomsmen: Seq[WeddingParty.PartyMember] = Seq()) derives YamlCodec
+  case class WeddingParty(bridesmaids: Seq[WeddingParty.PartyMember], groomsmen: Seq[WeddingParty.PartyMember]) derives Format, FormBuilder
   object WeddingParty {
-    case class PartyMember(name: String, role: String, image: String, bio: String) derives YamlCodec
+    case class PartyMember(name: String, role: String, image: Image, bio: Markdown) derives Format, FormBuilder
   }
   
-  case class Photos(photos: Seq[Photos.Photo] = Seq()) derives YamlCodec
+  case class Photos(photos: Seq[Photos.Photo]) derives Format, FormBuilder
   object Photos {
-    case class Photo(image: String, caption: Option[String]) derives YamlCodec
+    case class Photo(image: Image, caption: Option[Markdown]) derives Format, FormBuilder
   }
   
-  case class Registry(address: String = "", notes: String = "", items: Seq[Registry.Item] = Seq()) derives YamlCodec {
+  case class Registry(address: MultilineString, notes: Markdown, items: Seq[Registry.Item]) derives Format, FormBuilder {
     require(items.distinctBy(_.id).length == items.length, "Duplicate id in registry list")
   }
   object Registry {
-    case class Item(name: String, id: String, link: String, image: String, price: Option[Double]) derives YamlCodec
+    case class Item(name: String, id: String, link: String, image: Image, price: Option[Double]) derives Format, FormBuilder
   }
   
-  case class RSVP(notes: String = "", invitations: Seq[RSVP.Invitation] = Seq()) derives YamlCodec
+  case class RSVP(notes: Markdown, invitations: Seq[RSVP.Invitation]) derives Format, FormBuilder
   object RSVP {
-    case class Invitation(name: String, people: Seq[String], childrenInvited: Option[Boolean]) derives YamlCodec
+    case class Invitation(name: String, people: Seq[String], childrenInvited: Option[Boolean]) derives Format, FormBuilder
   }
   
-  case class Hotels(notes: String = "", hotels: Seq[Hotels.Hotel] = Seq()) derives YamlCodec
+  case class Hotels(notes: Markdown, hotels: Seq[Hotels.Hotel]) derives Format, FormBuilder
   object Hotels {
-    case class Hotel(name: String, address: String, link: String, desc: String) derives YamlCodec
+    case class Hotel(name: String, address: MultilineString, link: String) derives Format, FormBuilder
   }
 
   case class Invitation(
-    tagline: String = "Love endures all things",
-    parents: String = "Father and mother of the bride",
-    details: String = "It's a wedding, come to it",
-    url: String = "https://example.com",
-    deadline: LocalDate = LocalDate.now().plusWeeks(1)
-  ) derives YamlCodec
+    tagline: String,
+    parents: String,
+    details: Markdown,
+    url: String,
+    deadline: LocalDate
+  ) derives Format, FormBuilder
   
   case class Program(
-    ceremony: Seq[Seq[String]] = Seq(),
-    pastors: Seq[String] = Seq(),
-    pianist: String = "",
-    ushers: Seq[String] = Seq(),
-    flowerGirl: String = "flower girl",
-    ringBearer: String = "ring bearer",
-    reception: Seq[Seq[String]] = Seq(),
-    thanks: String = ""
-  ) derives YamlCodec
-
-  def fromForm(form: Map[String, String | File]): Details = {
-    Details()
-  }
+    ceremony: Seq[Seq[String]],
+    pastors: Seq[String],
+    pianist: String,
+    ushers: Seq[String],
+    flowerGirl: String,
+    ringBearer: String,
+    reception: Seq[Seq[String]],
+    thanks: Markdown
+  ) derives Format, FormBuilder
 }
 
 private case class PullYamlDetails(
