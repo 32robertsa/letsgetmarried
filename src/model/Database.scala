@@ -1,10 +1,10 @@
 package net.ivoah.letsgetmarried
 package model
 
-import sql.*
+import net.ivoah.squall.*
 
 object Database {
-  given Database = model.sql.Database("jdbc:sqlite:database.db")
+  given Connector = Connector("jdbc:sqlite:database.db")
 
   def getAllRSVPs(): Seq[RSVP] = sql"SELECT * FROM rsvp".query(RSVP.fromResultSet)
   def findRSVP(name: String): Option[RSVP] = sql"SELECT * FROM rsvp WHERE name=$name".query(RSVP.fromResultSet).headOption
@@ -23,15 +23,15 @@ object Database {
   }
 
   def getAllGifts(): Seq[Gift] = sql"SELECT * FROM gift".query(Gift.fromResultSet)
-  def getRegistryItemPurchase(item: RegistryItem): Option[String] = {
+  def getRegistryItemPurchase(item: Details.Registry.Item): Option[String] = {
     if (item.price.isEmpty) None
     else sql"SELECT purchasedBy FROM gift WHERE id=${item.id}".query(_.getString(1)).headOption
   }
-  def addRegistryItemPurchase(item: RegistryItem, purchasedBy: String, amount: Option[Double], notes: String): Boolean = {
+  def addRegistryItemPurchase(item: Details.Registry.Item, purchasedBy: String, amount: Option[Double], notes: String): Boolean = {
     sql"""
       INSERT INTO gift
       VALUES (${item.id}, datetime('now', 'localtime'), $purchasedBy, ${amount.orNull}, $notes)
     """.update() == 1
   }
-  def removeRegistryItemPurchase(item: RegistryItem): Boolean = sql"""DELETE FROM gift WHERE id=${item.id}""".update() == 1
+  def removeRegistryItemPurchase(item: Details.Registry.Item): Boolean = sql"""DELETE FROM gift WHERE id=${item.id}""".update() == 1
 }
