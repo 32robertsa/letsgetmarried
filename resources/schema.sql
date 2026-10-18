@@ -1,9 +1,9 @@
-create table details (
+create table if not exists details (
     details TEXT NOT NULL,
     date    DATETIME NOT NULL
 );
 
-create table gift (
+create table if not exists gift (
     id          TEXT NOT NULL,
     purchasedAt DATETIME NOT NULL,
     purchasedBy TEXT NOT NULL,
@@ -11,7 +11,7 @@ create table gift (
     notes       TEXT NOT NULL
 );
 
-create table rsvp (
+create table if not exists rsvp (
     name     TEXT PRIMARY KEY,
     people   TEXT NOT NULL,
     children INTEGER NOT NULL,

@@ -5,12 +5,6 @@ import play.api.libs.json.*
 import java.time.{LocalDate, LocalDateTime}
 import scalatags.Text.all.*
 
-import org.virtuslab.yaml.*
-import java.io.File
-import scala.io.Source
-import scala.math.Ordering.Implicits.seqOrdering
-
-
 case class Code(code: String)
 given StringWrapper[Code] {
   def init(s: String) = Code(s)
@@ -57,12 +51,14 @@ object Details {
     groom: String,
     bride: String,
     date: LocalDateTime,
+    dateus: String,
+    datedk: String,
     location: String
   ) derives Format, FormBuilder
 
   case class Home(image: Image, locations: Seq[Home.Location]) derives Format, FormBuilder
   object Home {
-    case class Location(name: String, time: String, address: MultilineString, link: String, details: Markdown) derives Format, FormBuilder
+    case class Location(name: String, title: String, time: String, address: MultilineString, link: String, image: String, details: Markdown) derives Format, FormBuilder
   }
 
   case class Story(title: String, image: Image, body: Markdown) derives Format, FormBuilder
@@ -114,23 +110,23 @@ object Details {
   ) derives Format, FormBuilder
 }
 
-private case class PullYamlDetails(
-  registry: Seq[Details.Registry.Item],
-  invitations: Seq[Details.Invitation],
-) derives YamlDecoder {
-  require(registry.distinctBy(_.id).length == registry.length, "Duplicate id in registry list")
-}
-
-val PullDetails = Source.fromResource("pullfromsheets.yaml").getLines().mkString("\n").as[PullYamlDetails] match {
-  case Left(err) => throw err
-  case Right(pulldetails) => pulldetails
-}
-
-val Seating = Source.fromResource("seating.yaml").getLines().mkString("\n").as[Map[String, Seq[String]]] match {
-  case Left(err) => throw err
-  case Right(seating) =>
-    val s = seating.toSeq
-      .flatMap { case (k, vv) => vv.map(v => v -> k) }
-      .sortBy(_._1.split("\\s+").reverse.toSeq)
-    s ++ Seq.fill(30 - s.length % 30)("" -> "")
-}
+//private case class PullYamlDetails(
+//  registry: Seq[Details.Registry.Item],
+//  invitations: Seq[Details.Invitation],
+//) derives YamlDecoder {
+//  require(registry.distinctBy(_.id).length == registry.length, "Duplicate id in registry list")
+//}
+//
+//val PullDetails = Source.fromResource("pullfromsheets.yaml").getLines().mkString("\n").as[PullYamlDetails] match {
+//  case Left(err) => throw err
+//  case Right(pulldetails) => pulldetails
+//}
+//
+//val Seating = Source.fromResource("seating.yaml").getLines().mkString("\n").as[Map[String, Seq[String]]] match {
+//  case Left(err) => throw err
+//  case Right(seating) =>
+//    val s = seating.toSeq
+//      .flatMap { case (k, vv) => vv.map(v => v -> k) }
+//      .sortBy(_._1.split("\\s+").reverse.toSeq)
+//    s ++ Seq.fill(30 - s.length % 30)("" -> "")
+//}

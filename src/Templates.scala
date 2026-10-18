@@ -53,13 +53,13 @@ class Templates(details: Details, request: Request) {
     meta(name:="viewport", content:="width=device-width", attr("initial-scale"):="1.0"),
     script(src:="/static/konami.js"),
     if (request.cookies.exists(_.name == "neko")) script(src:="/static/neko.js") else frag(),
-    link(rel:="icon", `type`:="image/svg+xml", href:="/static/favicon.svg"),
+    link(rel:="icon", `type`:="image/svg+xml", href:="/static/favicon.png"),
     link(rel:="stylesheet", href:=s"/static/style.css"),
     details.general.style.map(css => tag("style")(raw(css.code)))
   )
 
   private def _header(currentPage: String) = header(
-    p(cls:="headerImages", details.general.headerImages.map(s => img(src:=s))),
+    p(cls:="headerImages", details.general.headerImages),
     if (details.general.underConstruction) h5("Website under construction - information subject to change") else frag(),
     h1(s"${details.general.bride.split(" ").head} & ${details.general.groom.split(" ").head}"),
     h3(s"${details.general.dateus} • ${details.general.datedk}"),
@@ -112,15 +112,15 @@ class Templates(details: Details, request: Request) {
     )
   )).render
 
-  def message(tab: String, msg: String): String = page(tab)(h5(cls:="centered", Markdown.render(msg)))
+  def message(tab: String, msg: String): String = page(tab)(h5(cls:="centered", Markdown(msg)))
 
   def home(): String = page("Home")(
-    img(src:=details.home.image),
+    details.home.image,
     h5("The wedding of • Brylluppet af"),
     h2(s"${details.general.bride}"),
     h5("and • og"),
     h2(s"${details.general.groom}"),
-    h5(fullformat.format(details.general.date)),
+    h5(s"${details.general.dateus} • ${details.general.datedk}"),
     for (location <- details.home.locations) yield frag(
       h4(location.name),
       div(cls:="location",
@@ -128,8 +128,8 @@ class Templates(details: Details, request: Request) {
         div(
           h5(location.title),
           h5(location.time),
-          a(href:=location.link, Markdown.render(location.address)),
-          Markdown.render(location.details)
+          a(href:=location.link, div(cls:="pre-wrap", location.address)),
+          location.details
         )
       )
     )
@@ -146,7 +146,7 @@ class Templates(details: Details, request: Request) {
       div(
         h2(member.name),
         h4(member.role),
-        img(src:=member.image),
+        member.image,
         div(cls:="markdown", Markdown.render(member.bio))
 
         //h3(member.name, br(), member.role),
@@ -306,7 +306,7 @@ class Templates(details: Details, request: Request) {
   )
 
   def editDetails() = page("Edit details")(
-    form(method:="POST",
+    form(id:="detailsForm", method:="POST",
       details.buildForm("details"),
       div(display:="flex", style:="gap: 10px",
         input(`type`:="submit", formaction:="#", name:="save", value:="Save"),
@@ -325,9 +325,24 @@ class Templates(details: Details, request: Request) {
           textarea.value = view.state.doc.toString();
         })
       }
+
+      document.getElementById("detailsForm").addEventListener("submit", e => {
+        if (e.submitter?.getAttribute("formaction")?.startsWith("#")) {
+          sessionStorage.setItem("scrollY", window.scrollY);
+          e.submitter.setAttribute("formaction", location.pathname);
+        }
+      });
+
+      const savedScroll = sessionStorage.getItem("scrollY");
+      sessionStorage.removeItem("scrollY");
+      const scrollback = () => {
+        if (savedScroll !== null) window.scrollTo(0, Number(savedScroll));
+      };
+      scrollback();
+      window.addEventListener("load", scrollback);
     """))
   )
-  
+
   def gifts(allGifts: Seq[Gift]): String = page("Gifts")(
     p(s"Total: ${allGifts.length}"),
     for ((giver, gifts) <- allGifts.groupBy(_.purchasedBy).toSeq) yield {
