@@ -119,7 +119,20 @@ class Endpoints() {
     case ("GET", "/program", r) => Response(Templates(details, r).program())
     // case ("GET", "/seating", r) => Response(Templates(details, r).seating())
     // case ("GET", s"/static/$file", _) => Response.forFile(Paths.get("static"), Paths.get(file), None, Map("Cache-Control" -> Seq("max-age=3600")))
-    case ("GET", s"/static/$file", _) => Response.forFile(Paths.get("static"), Paths.get(file))
-    case ("GET", s"/photos/$file", _) => Response.forFile(Paths.get("photos"), Paths.get(file), None, Map("Cache-Control" -> Seq("max-age=3600")))
+    case ("GET", s"/static/$file", _) => Response.forFile(Paths.get("static"), Paths.get(file), contentType(file))
+    case ("GET", s"/photos/$file", _) => Response.forFile(Paths.get("photos"), Paths.get(file), contentType(file), Map("Cache-Control" -> Seq("max-age=3600")))
+  }
+
+  // Files.probeContentType varies by host (the Pi serves .css as text/plain), so pin the common types
+  private def contentType(file: String): Option[String] = file.split('.').last.toLowerCase match {
+    case "css" => Some("text/css")
+    case "js" => Some("text/javascript")
+    case "svg" => Some("image/svg+xml")
+    case "png" => Some("image/png")
+    case "jpg" | "jpeg" => Some("image/jpeg")
+    case "ttf" => Some("font/ttf")
+    case "otf" => Some("font/otf")
+    case "pdf" => Some("application/pdf")
+    case _ => None
   }
 }
